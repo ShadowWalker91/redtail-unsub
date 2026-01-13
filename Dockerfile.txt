@@ -1,0 +1,17 @@
+FROM mcr.microsoft.com/playwright/python:v1.40.0-jammy
+
+WORKDIR /app
+
+COPY . /app
+
+# Install python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# CRITICAL FIX: Ensure Chromium is installed and ready in this specific container
+RUN playwright install chromium
+RUN playwright install-deps chromium
+
+EXPOSE 8080
+
+# Use uvicorn for FastAPI
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
