@@ -4,14 +4,16 @@ WORKDIR /app
 
 COPY . /app
 
-# Install python dependencies
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# CRITICAL FIX: Ensure Chromium is installed and ready in this specific container
+# Install Browsers
 RUN playwright install chromium
 RUN playwright install-deps chromium
 
+# Expose the port (informative)
 EXPOSE 8080
 
-# Use uvicorn for FastAPI
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+# CRITICAL FIX: Run with python directly so it reads the Railway $PORT variable
+# The -u flag ensures logs are printed immediately to the console
+CMD ["python", "-u", "main.py"]
