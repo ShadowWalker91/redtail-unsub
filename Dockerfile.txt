@@ -11,9 +11,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN playwright install chromium
 RUN playwright install-deps chromium
 
-# Expose the port (informative)
-EXPOSE 8080
-
-# CRITICAL FIX: Run with python directly so it reads the Railway $PORT variable
-# The -u flag ensures logs are printed immediately to the console
-CMD ["python", "-u", "main.py"]
+# CRITICAL FIX: Use shell execution to properly expand the $PORT variable provided by Railway
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8080}"]
